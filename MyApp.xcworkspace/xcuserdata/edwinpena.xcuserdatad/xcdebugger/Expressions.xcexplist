@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "specialized ItemListInteractor.(requestGetFilms() -&gt; ()).(closure #1):ItemListInteractor.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "films">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "specialized FilmsWorkerImp.(queryGetFilms(([FilmEntity]) -&gt; ()) -&gt; ()).(closure #2):FilmsWorker.swift">
+      </ContextState>
+      <ContextState
+         contextName = "specialized FilmsWorkerImp.(requestGetFilms((GetFilmsEntity) -&gt; ()) -&gt; ()).(closure #1).(closure #2):FilmsWorker.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "realm.getObjects(primaryKeys)">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>

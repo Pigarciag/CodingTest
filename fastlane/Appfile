@@ -1,0 +1,9 @@
+app_identifier = ENV["APP_IDENTIFIER"] # The bundle identifier of your app
+
+apple_dev_portal_id = ENV["APPLE_ID"]
+team_id = ENV["TEAM_ID"]
+
+itunes_connect_id = ENV["ITC_ID"]
+itc_team_id = ENV["ITC_TEAM_ID"]
+
+# More information: https://github.com/fastlane/fastlane/blob/master/fastlane/docs/Appfile.md

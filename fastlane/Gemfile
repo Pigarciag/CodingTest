@@ -1,0 +1,10 @@
+#Run it with bundler (#gem install -n ~/Documents/gems/ bundler --user-install): bundle install
+#If you have problems with bundler, install all these gems manually with 'gem install -n ~/Documents/gems/ GEM_TO_INSTALL --user-install'
+
+source 'https://rubygems.org'
+
+gem 'activesupport', '~> 4.2.6' #v5.0.0 requires ruby v2.2.2 and the Mac OSX ruby version is 2.0.0
+gem 'dotenv', '~> 2.1', '>= 2.1.1'
+gem 'fastlane', '~> 2.28.2'
+gem 'cocoapods', '~> 1.2.0'
+gem 'xcov', '~> 1.2.0'

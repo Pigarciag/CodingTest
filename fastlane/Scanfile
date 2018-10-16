@@ -1,0 +1,11 @@
+# For more information about this configuration visit
+# https://github.com/fastlane/scan#scanfile
+
+# In general, you can use the options available
+# scan --help
+
+workspace ENV["WORKSPACE_NAME"]
+scheme ENV["SCHEME"]
+derived_data_path ENV["XCODE_DERIVED_DATA_PATH"]
+code_coverage true
+slack_only_on_failure true

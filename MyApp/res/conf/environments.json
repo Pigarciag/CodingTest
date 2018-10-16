@@ -1,0 +1,20 @@
+{
+    "languages": ["en","es","ca"],
+    "configurations": {
+        "appstore" : {
+            "base_url" : "www.app.com/appstore"
+        },
+        "devel" : {
+            "base_url" : "www.app.com/devel"
+        },
+        "pro" : {
+            "base_url" : "www.app.com/pro"
+        },
+        "test" : {
+            "base_url" : "www.app.com/test"
+        },
+        "uat" : {
+            "base_url" : "www.app.com/uat"
+        }
+    }
+}

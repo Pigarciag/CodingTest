@@ -1,0 +1,374 @@
+# This is the minimum version number required.
+# Update this, if you use features of a newer version
+
+fastlane_version "2.25.0"
+xcode_select "/Applications/Xcode.app"
+
+default_platform :ios
+
+platform :ios do
+
+  ############################# PRE ##############################
+
+  before_all do
+    
+    #ensure_git_status_clean
+    
+    config_env
+
+  end
+
+  ############################# PUBLIC LANES ##############################
+
+  #--------------------------- App Id, Certificates and Provisioning Profiles -------------------------#
+
+  desc "Create an App ID in developer portal."
+  lane :create_app_devcenter do |options|
+      produce({
+        username: ENV["APPLE_ID"],
+        app_identifier: ENV["APP_IDENTIFIER"],
+        app_name: ENV["APP_NAME"],
+        app_version: ENV["APP_VERSION"],
+        language: 'English',
+        sku: 't21',
+        team_id: ENV["TEAM_ID"],
+        skip_itc: true
+      })
+      certs
+  end
+
+  desc "Download and refresh profiles specifying the environment with --env <environment>"
+  lane :certs do
+      sync_certs(readonly: false)
+  end
+
+  #--------------------------- Run Tests -------------------------#
+
+  desc "Runs all the tests"
+
+  lane :test do
+
+    if is_ci
+      puts "Launch sh file at: ${T21_IOS_DIRECTORY}/launch_ios_simulator.sh '#{ENV["DEVICE"]}'"
+      sh "${T21_IOS_DIRECTORY}/launch_ios_simulator.sh '#{ENV["DEVICE"]}'"
+    end
+
+    load_env(env: "devel")
+
+    sync_certs(readonly: true)
+
+    # Install Pod dependencies
+    pod_install
+
+    scan(device: ENV["DEVICE"])
+    
+    xcov(
+        derived_data_path: ENV["XCODE_DERIVED_DATA_PATH"],
+        workspace: ENV["WORKSPACE_NAME"],
+        scheme: ENV["SCHEME"],
+        output_directory: "./fastlane/test_output/code_coverage",
+        include_targets: "#{ENV["APP_NAME"]}.app"
+    )
+  end
+
+
+  #--------------------------- TestFlight -------------------------#
+
+  desc "Submit a new Beta Build to Apple TestFlight"
+
+  lane :testflight_deploy do |options|
+
+    sync_certs(readonly: true)
+
+    # Increment version number with bump_type (patch, minor or major) or specific version
+    increment_version(options)
+
+    # Send the project to take a "build and archive" treatment
+    build_and_archive(options)
+
+    pilot(
+      username: ENV["ITC_ID"],
+      skip_waiting_for_build_processing: true,
+      distribute_external: false
+    )
+
+    push_version_bump
+
+  end
+
+
+  #--------------------------- Fabric -------------------------#
+
+  desc "Submit a new Beta Build to Crashlytics Beta for an specific environment"
+
+  lane :fabric_deploy do |options|
+
+    sync_certs(readonly: true)
+
+    # Increment version number with bump_type (patch, minor or major) or specific version
+    increment_version(options)
+
+    # Send the project to take a "build and archive" treatment
+    build_and_archive(options)
+
+    crashlytics(
+      crashlytics_path: './Pods/Crashlytics',
+      api_token: ENV["CRASHLYTICS_API_TOKEN"],
+      build_secret: ENV["CRASHLYTICS_BUILD_SECRET"],
+      ipa_path: "#{Actions.lane_context[SharedValues::IPA_OUTPUT_PATH]}",
+      groups: ENV["CRASHLYTICS_DISTRIBUTION_GROUPS"],
+      notifications: true,
+      notes_path: './fastlane/changelog.txt'
+    )
+
+  end
+
+  desc "Submit a new Beta Build to Crashlytics Beta for an specific environment (without incrementing the version)"
+
+  lane :fabric_deploy_no_version_bump do |options|
+
+    sync_certs(readonly: true)
+
+    # Send the project to take a "build and archive" treatment
+    build_and_archive(options)
+
+    crashlytics(
+      crashlytics_path: './Pods/Crashlytics',
+      api_token: ENV["CRASHLYTICS_API_TOKEN"],
+      build_secret: ENV["CRASHLYTICS_BUILD_SECRET"],
+      ipa_path: "#{Actions.lane_context[SharedValues::IPA_OUTPUT_PATH]}",
+      groups: ENV["CRASHLYTICS_DISTRIBUTION_GROUPS"],
+      notifications: true,
+      notes_path: './fastlane/changelog.txt'
+    )
+
+  end
+
+  desc "Submit several Beta Builds to Crashlytics Beta (one for each environment)"
+
+  lane :fabric_deploy_all do |options|
+
+  # Increment version number with bump_type (patch, minor or major) or specific version
+  increment_version(options)
+
+  load_env(env: "test")
+  fabric_deploy_no_version_bump(options)
+
+  load_env(env: "uat")
+  fabric_deploy_no_version_bump(options)
+
+  load_env(env: "pro")
+  fabric_deploy_no_version_bump(options)
+
+  end
+
+  #--------------------------- App Store -------------------------#
+
+  desc "Deploy a new version to the App Store"
+
+  lane :appstore_deploy do
+
+    load_env(env: "appstore")
+
+    sync_certs(readonly: true)
+    
+    scan(device: "#{ENV["DEVICE"]}")
+
+    # Increment version number with bump_type (patch, minor or major) or specific version
+    increment_version(options)
+
+    # Send the project to take a "build and archive" treatment
+    build_and_archive(version_number: last_git_tag)
+
+    deliver
+
+  end
+
+  ######################### PRIVATE LANES #########################
+
+  #--------------------------- Environment configuration -------------------------#
+
+  private_lane :config_env do
+
+    if is_ci
+      Actions.lane_context[Actions::SharedValues::ORIGINAL_DEFAULT_KEYCHAIN] = "iOS.keychain-db"
+    else
+      Actions.lane_context[Actions::SharedValues::ORIGINAL_DEFAULT_KEYCHAIN] = "login.keychain"
+    end
+
+  end
+
+  private_lane :load_env do |options|
+
+    require 'dotenv'
+    env_file = File.join(FastlaneCore::FastlaneFolder.path || "", ".env.#{options[:env]}")
+    
+    Dotenv.overload(env_file)
+
+  end
+
+
+  #--------------------------- Sync certs before execute lane (read only) -------------------------#
+
+  private_lane :sync_certs do |options|
+
+    if is_ci
+      puts "Unlocking the keychain..."
+      unlock_keychain(path:"iOS.keychain-db", password:"iosdev")
+      sh "security set-keychain-settings -t 3600 -l $HOME/Library/Keychains/iOS.keychain-db"
+    end
+
+    match(
+      readonly: options[:readonly],
+      keychain_name: File.basename(Actions.lane_context[Actions::SharedValues::ORIGINAL_DEFAULT_KEYCHAIN])
+    )
+
+    if is_ci
+      puts "Disabling prompts for codesign..."
+      sh "security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k iosdev iOS.keychain-db"
+    end
+
+  end
+
+  #--------------------------- Build -------------------------#
+
+  private_lane :build_and_archive do |options|
+
+    # Install Pod dependencies
+    pod_install
+
+    if is_ci
+      swiftlint
+    end
+
+    # Build and archive
+    gym(output_name: get_ipa_name)
+
+  end
+
+  private_lane :increment_version do |options|
+
+    options ||= {bump_type: patch}
+
+    increment_version_number(options)
+    increment_build_number(build_number: Actions.lane_context[SharedValues::VERSION_NUMBER]);
+
+  end
+
+  private_lane :pod_install do |options|
+
+    # run a pod install execution
+    if is_ci
+      sh "git clone --depth 1 https://github.com/CocoaPods/Specs.git ~/.cocoapods/repos/master"
+    end
+
+    sh "pod install"
+  
+  end
+
+  lane :install_cocoapods do
+
+    sh "pod --version"
+    sh "rm '/usr/local/bin/pod'"
+    sh "rm '/usr/local/bin/xcodeproj'"
+    sh "brew install cocoapods"
+    sh "pod --version"
+
+  end
+
+  #--------------------------- Git -------------------------#
+
+  lane :increment_and_push_version_bump do
+
+    # Increment version (other lanes use the increment but they do not PUSH)
+    increment_version
+
+    # Push that increment
+    push_version_bump
+
+  end
+
+  private_lane :push_version_bump do
+
+    # Make sure our directory is clean, except for changes Fastlane has made
+    clean_build_artifacts
+
+    # Commit and push the version bump to our git repository
+    current_branch = git_branch
+    puts "Commit and push to remote/git_branch: #{current_branch}"
+
+    branch_to_push = current_branch.gsub(%r{origin\/}, '')
+    puts "Git Branch: #{branch_to_push}"
+
+    commit_version_bump(message:"#{ENV["APP_NAME"]} v#{Actions.lane_context[SharedValues::VERSION_NUMBER]} (Version Bump) [skip ci]")
+
+    sh "git push https://TechUser-Fastlane:iOSTeam.T21@#{ENV["GIT_PROJECT"]} HEAD:#{branch_to_push}"
+
+  end
+
+  ############################# UTILS ##############################
+
+  private_lane :get_version_from_xcode do
+    get_info_plist_value(
+      path: "./#{ENV["TARGET"]}/src/main/#{ENV["TARGET"]}-Info.plist",
+      key: 'CFBundleShortVersionString'
+    )
+  end
+
+  private_lane :get_ipa_name do
+    "#{ENV["APP_NAME"]}_#{ENV["ENV_TYPE"]}_#{get_version_from_xcode}"
+  end
+
+  private_lane :print_full_log do
+    counter = 1
+    file = File.new("/Users/vagrant/Library/Logs/gym/MyApp-app_scheme.log", "r")
+    while (line = file.gets)
+        puts "#{counter}: #{line}"
+        counter = counter + 1
+    end
+    file.close
+  end
+
+  ############################# POST ##############################
+
+  # This block is called, only if the executed lane was successful
+  after_all do |lane|
+
+    slack(
+      message: "fastlane was successful :rocket:",
+      success: true,
+      default_payloads: [:lane, :test_result, :git_branch, :git_author]
+    )
+
+  end
+
+  # This block is called when any lane was fail
+  error do |lane, exception|
+    if is_ci
+      #print_full_log
+    end
+
+    file = File.open("/Users/vagrant/Library/Logs/gym/MyApp-app_scheme.log")
+    contents = ""
+    file.each {|line|
+      contents << line
+    }
+
+    slack(
+        channel: ENV["SLACK_CHANNEL"],
+        message: contents,
+        success: false,
+        attachment_properties: {
+
+        }
+      )
+
+  end
+
+end
+
+# More information about multiple platforms in fastlane: https://github.com/fastlane/fastlane/blob/master/fastlane/docs/Platforms.md
+# All available actions: https://github.com/fastlane/fastlane/blob/master/fastlane/docs/Actions.md
+
+# fastlane reports which actions are used
+# No personal data is recorded. Learn more at https://github.com/fastlane/enhancer

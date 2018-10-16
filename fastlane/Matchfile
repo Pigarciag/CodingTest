@@ -1,0 +1,8 @@
+git_url "https://TechUser-Fastlane:iOSTeam.T21@gitlab.kazan.atosworldline.com/t21-ios-resources/fastlane-match.git"
+
+app_identifier ENV["APP_IDENTIFIER"]
+username ENV["APPLE_ID"]
+team_id ENV["TEAM_ID"]
+type ENV["ENV_TYPE"]
+git_branch "teamm_#{ENV["TEAM_ID"]}"
+force_for_new_devices ENV["ADD_DEVICES"]

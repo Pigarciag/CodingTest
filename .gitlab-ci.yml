@@ -1,0 +1,101 @@
+stages:
+ - test
+ - push_version_bump
+ - deploy
+ - publish
+
+before_script:
+
+#Update cocoapods version
+
+ # - pod --version
+ # - rm '/usr/local/bin/pod'
+ # - rm '/usr/local/bin/xcodeproj'
+ # - brew install cocoapods
+ # - pod --version
+
+#Update fastlane version
+
+ - fastlane -v
+ - curl -o $HOME/Downloads/fastlane.zip 'https://download.fastlane.tools/'
+ - unzip $HOME/Downloads/fastlane.zip -d $HOME/Downloads/fastlane
+ - sed -i.bu '/update_fastlane/d' $HOME/Downloads/fastlane/install #delete update_fastlane call due to an SSL error updating gems...
+ - sed -i.backup 's/echoc "After doing so close the terminal session and restart it to start using fastlane  🚀" green/exit 0/g' $HOME/Downloads/fastlane/install
+ - sh $HOME/Downloads/fastlane/install
+ - echo "export PATH='$HOME/.fastlane/bin:$PATH'" >> ~/.bash_profile
+ - source ~/.bash_profile
+ - fastlane -v
+
+
+ #- security find-certificate -c Worldwide -a -p
+ #- security find-certificate -c Worldwide -a -Z
+
+#Test (Postponed until Gitlab v9.1 or major version, when the Pipelines scheduled can be configured)
+
+test_job:
+ stage: test
+ script:
+   - fastlane install_cocoapods
+   - fastlane test
+ tags:
+   - Xcode_8.3.2
+ only:
+   - /^release.*$/
+   - master
+ when: manual
+
+# Push version bump (must be done before all deploys)
+
+push_version_bump_job:
+ stage: push_version_bump
+ script:
+   - fastlane increment_and_push_version_bump
+   #- fastlane help
+ tags:
+   - Xcode_8.3.2
+ only:
+   - /^release.*$/
+
+# deploy
+
+deploy_job_test:
+ stage: deploy
+ script:
+  - fastlane install_cocoapods
+  - fastlane fabric_deploy --env test
+ tags:
+  - Xcode_8.3.2
+ only:
+  - /^release.*$/
+
+deploy_job_uat:
+ stage: deploy
+ script:
+   - fastlane install_cocoapods
+   - fastlane fabric_deploy --env uat
+ tags:
+   - Xcode_8.3.2
+ only:
+   - /^release.*$/
+
+deploy_job_pro:
+ stage: deploy
+ script:
+   - fastlane install_cocoapods
+   - fastlane fabric_deploy --env pro
+ tags:
+   - Xcode_8.3.2
+ only:
+   - /^release.*$/
+
+#Publish
+
+publish_job:
+ stage: publish
+ script:
+   - fastlane install_cocoapods
+   - fastlane appstore_deploy
+ tags:
+   - Xcode_8.3.2
+ only:
+   - master

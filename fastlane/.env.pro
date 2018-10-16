@@ -1,0 +1,2 @@
+#App configuration
+GYM_CONFIGURATION=pro

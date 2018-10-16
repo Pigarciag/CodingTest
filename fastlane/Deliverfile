@@ -1,0 +1,8 @@
+app_identifier ENV["APP_IDENTIFIER"] # The bundle identifier of your app
+username ENV["ITC_ID"] # your Apple ID user
+
+
+automatic_release false
+force true #skip html verification step
+
+ENV["DELIVER_ITMSTRANSPORTER_ADDITIONAL_UPLOAD_PARAMETERS"] = "-t DAV" #Allow upload binaries with the firewall

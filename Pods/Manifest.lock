@@ -1,0 +1,172 @@
+PODS:
+  - Alamofire (4.5.1)
+  - Crashlytics (3.9.3):
+    - Fabric (~> 1.7.2)
+  - Fabric (1.7.2)
+  - Kingfisher (4.2.0)
+  - Marshal (1.2.4)
+  - Material (2.12.14):
+    - Material/Core (= 2.12.14)
+  - Material/Core (2.12.14):
+    - Motion (~> 1.2.5)
+  - MBProgressHUD (1.0.0)
+  - Motion (1.2.5):
+    - Motion/Core (= 1.2.5)
+  - Motion/Core (1.2.5)
+  - Moya (10.0.0):
+    - Moya/Core (= 10.0.0)
+  - Moya/Core (10.0.0):
+    - Alamofire (~> 4.1)
+    - Result (~> 3.0)
+  - Realm (2.10.2):
+    - Realm/Headers (= 2.10.2)
+  - Realm/Headers (2.10.2)
+  - RealmSwift (2.10.2):
+    - Realm (= 2.10.2)
+  - Result (3.2.4)
+  - RNCryptor (5.0.1)
+  - RxCocoa (4.1.2):
+    - RxSwift (~> 4.0)
+  - RxSwift (4.1.2)
+  - SwifterSwift (4.0.1):
+    - SwifterSwift/AppKit (= 4.0.1)
+    - SwifterSwift/CoreGraphics (= 4.0.1)
+    - SwifterSwift/CoreLocation (= 4.0.1)
+    - SwifterSwift/Foundation (= 4.0.1)
+    - SwifterSwift/SwiftStdlib (= 4.0.1)
+    - SwifterSwift/UIKit (= 4.0.1)
+  - SwifterSwift/AppKit (4.0.1)
+  - SwifterSwift/CoreGraphics (4.0.1)
+  - SwifterSwift/CoreLocation (4.0.1)
+  - SwifterSwift/Foundation (4.0.1)
+  - SwifterSwift/SwiftStdlib (4.0.1)
+  - SwifterSwift/UIKit (4.0.1)
+  - SwiftLint (0.23.1)
+  - SwiftyBeaver (1.4.2)
+  - Swinject (2.1.1)
+  - T21Button (1.1.0)
+  - T21EnvironmentSwift (1.1.0):
+    - T21LoggerSwift (~> 1.2.0)
+    - T21Notifier (~> 1.0.0)
+  - T21HTTPRequester (1.1.0):
+    - Moya
+    - T21LoggerSwift
+    - T21Mapping
+  - T21KeyboardState (1.1.0):
+    - T21Notifier (~> 1.0)
+  - T21LoggerSwift (1.2.0):
+    - SwiftyBeaver (~> 1.4)
+  - T21Mapping (1.0.4)
+  - T21MaterialTextField (1.1.0):
+    - Material (~> 2.12)
+  - T21Notifier (1.0.2)
+  - T21PullToRefreshController (2.0.0)
+  - T21RealmStoreSwift (2.1.0):
+    - RealmSwift (~> 2.9)
+    - T21LoggerSwift
+    - T21SortingDescriptorSwift (~> 2.0)
+  - T21RxAdditions (1.0.1):
+    - RxCocoa
+    - RxSwift
+  - T21SortingDescriptorSwift (2.1.0)
+  - T21TableViewDataSource (1.1.2)
+
+DEPENDENCIES:
+  - Alamofire
+  - Crashlytics
+  - Fabric
+  - Kingfisher
+  - Marshal
+  - MBProgressHUD
+  - Moya
+  - RNCryptor (~> 5.0)
+  - RxCocoa (~> 4.0)
+  - RxSwift (~> 4.0)
+  - SwifterSwift
+  - SwiftLint
+  - Swinject
+  - T21Button
+  - T21EnvironmentSwift
+  - T21HTTPRequester
+  - T21KeyboardState
+  - T21LoggerSwift
+  - T21Mapping
+  - T21MaterialTextField
+  - T21PullToRefreshController (= 2.0.0)
+  - T21RealmStoreSwift
+  - T21RxAdditions
+  - T21TableViewDataSource
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - Alamofire
+    - Crashlytics
+    - Fabric
+    - Kingfisher
+    - Marshal
+    - Material
+    - MBProgressHUD
+    - Motion
+    - Moya
+    - Realm
+    - RealmSwift
+    - Result
+    - RNCryptor
+    - RxCocoa
+    - RxSwift
+    - SwifterSwift
+    - SwiftLint
+    - SwiftyBeaver
+    - Swinject
+  https://github.com/worldline-spain/t21_pods-specs_ios.git:
+    - T21Button
+    - T21EnvironmentSwift
+    - T21HTTPRequester
+    - T21KeyboardState
+    - T21LoggerSwift
+    - T21Mapping
+    - T21MaterialTextField
+    - T21Notifier
+    - T21PullToRefreshController
+    - T21RealmStoreSwift
+    - T21RxAdditions
+    - T21SortingDescriptorSwift
+    - T21TableViewDataSource
+
+SPEC CHECKSUMS:
+  Alamofire: 2d95912bf4c34f164fdfc335872e8c312acaea4a
+  Crashlytics: dbb07d01876c171c5ccbdf7826410380189e452c
+  Fabric: 9cd6a848efcf1b8b07497e0b6a2e7d336353ba15
+  Kingfisher: 9ee7e788d8ba07c3f21ce0d43f33cec310a4f781
+  Marshal: 8e04e6624e506921db7143b0bfd83caee03f32d6
+  Material: e2ba7d741faca54b5baa1fe3746c056fedafffc7
+  MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
+  Motion: 88a8bee21926af792333f4b9e7170f710e9e48f3
+  Moya: adb58b0f4e58430db43cc6e2f6ebab1836501186
+  Realm: 0ef72b837fb67e9f4b098bac771ddd72c7fdbb69
+  RealmSwift: 07a9ae0505091eda6b2ee7c190c3786d6e90a7b0
+  Result: d2d07204ce72856f1fd9130bbe42c35a7b0fea10
+  RNCryptor: 2e352a488779d1a9184ab629be22a7c5bc84acb5
+  RxCocoa: d88ba0f1f6abf040011a9eb4b539324fc426843a
+  RxSwift: e49536837d9901277638493ea537394d4b55f570
+  SwifterSwift: 5f406a5f831343312d6d5b34282b57ef3f52c40b
+  SwiftLint: 1b670ce79284c76520f84060e87d645078fd32fa
+  SwiftyBeaver: 91057725648ee4980308f1650af077d04b3654a0
+  Swinject: afea49fd95f392b41171669f165842879c48fad6
+  T21Button: 1fa5536b912e3675ce3460032bc9040e9093ccf6
+  T21EnvironmentSwift: c30fe6176c4d3f1f3c9de1e1a2c24d3d9704b48c
+  T21HTTPRequester: 5933139c14535037f28f6e685945339bddef3d4f
+  T21KeyboardState: 809c4c73641a4d89c88faa3238240b362058e917
+  T21LoggerSwift: 607d480dada1d49d93cbb8c6c04c921bb1e5b581
+  T21Mapping: 0f93cff2ecd699637ab6b7ae072100e03bb5a3a2
+  T21MaterialTextField: fbd2e340143d46c007f16fc4fb9190bb63e629fd
+  T21Notifier: 600f19a8f21e9895af5ea7a544ab7fe48a0df5ee
+  T21PullToRefreshController: 5a6fdad037bd2df7f2f6121ff44744c763271ab2
+  T21RealmStoreSwift: 60558cc0cac669a3d8251ac9ec707254541fdd9f
+  T21RxAdditions: 35360b7e2eb3dd806a01cab9035ffa9558c805f3
+  T21SortingDescriptorSwift: c39693425f8745d80c59c0c274e17a4e6d6c6677
+  T21TableViewDataSource: d769af03060e351ffe2ed9f9caf0ce612b91ccf0
+
+PODFILE CHECKSUM: 065b55623f2519871c770b2ef16a957eb83565b0
+
+COCOAPODS: 1.5.3

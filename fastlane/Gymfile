@@ -1,0 +1,9 @@
+workspace ENV["WORKSPACE_NAME"]
+scheme ENV["SCHEME"]
+
+configuration ENV["GYM_CONFIGURATION"]
+clean true
+include_symbols true
+silent false
+
+output_directory "./build"

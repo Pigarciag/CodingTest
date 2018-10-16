@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<api baseurl="http://t21services.herokuapp.com">
+    
+    <!--
+     Base Services
+     -->
+    <service name="T21ExampleApiBaseService">
+        <param name="Accept" type="header" mandatory="true" value="application/json" />
+    </service>
+    
+    <!--
+     Example Services
+     -->
+    <service name="T21ExampleApiGetPoints" parent="T21ExampleApiBaseService" verb="get" url="/points" />
+    <service name="T21ExampleApiGetPoint" parent="T21ExampleApiBaseService" verb="get" url="/points/{identifier}" />
+</api>

@@ -1,0 +1,31 @@
+disabled_rules: # rule identifiers to exclude from running
+  - variable_name
+  - vertical_parameter_alignment
+included: # paths to include during linting. `--path` is ignored if present.
+  - MyApp/src
+excluded: # paths to ignore during linting. Takes precedence over `included`.
+  - Pods
+  - Frameworks
+
+# configurable rules can be customized from this configuration file
+# binary rules can set their severity level
+force_cast: warning # implicitly. Give warning only for force casting
+
+force_try:
+  severity: warning # explicitly. Give warning only for force try
+
+type_body_length:
+  - 300 # warning
+  - 400 # error
+
+# or they can set both explicitly
+file_length:
+  - 500 # warning
+  - 800 # error
+
+line_length:
+  warning: 130
+  error: 200
+
+warning_threshold: 50
+reporter: "xcode"
