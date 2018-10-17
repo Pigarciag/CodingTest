@@ -38,6 +38,7 @@ class ItemDetailPresenter: ItemDetailEventHandler, ItemDetailResponseHandler {
     }
 
     func itemListDetailViewWillAppear() {
+        //Fetch POI
         context = appDelegate.persistentContainer.viewContext
         let request = POI.fetchRequest() as NSFetchRequest<POI>
         let item = interactor.requestPOI()
@@ -52,6 +53,7 @@ class ItemDetailPresenter: ItemDetailEventHandler, ItemDetailResponseHandler {
         }
         let pois = fetchedRC.fetchedObjects
         let poi = pois?.first
+        //Request POI
         if let item = interactor.requestPOI() {
             viewModel.title.value = item.title
             viewModel.geocoordinates.value = item.geocoordinates
@@ -94,6 +96,7 @@ class ItemDetailPresenter: ItemDetailEventHandler, ItemDetailResponseHandler {
                     self?.appDelegate.saveContext()
 
                 default:
+                    //Shows fetched POI
                     self?.viewModel.address.value = poi?.address ?? ""
                     self?.viewModel.transport.value = poi?.transport ?? ""
                     self?.viewModel.url.value = poi?.url ?? ""

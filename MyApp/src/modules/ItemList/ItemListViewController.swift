@@ -82,7 +82,7 @@ extension ItemListViewController: UISearchBarDelegate {
         guard let txt = searchBar.text else {
             return
         }
-        presenter.search(txt)
+        presenter.refresh(txt)
         searchBar.resignFirstResponder()
         self.tableView?.reloadData()
     }

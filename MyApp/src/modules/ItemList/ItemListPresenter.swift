@@ -16,7 +16,8 @@ protocol ItemListEventHandler: class {
     func itemListViewWillAppear()
     func itemListViewDidPressMenuButton()
     func itemListPullToRefreshReceived()
-    func search(_ txt: String)
+    //func search(_ txt: String)
+    func refresh(_ txt: String)
     func reloadData()
 }
 
@@ -76,14 +77,13 @@ class ItemListPresenter: ItemListEventHandler, ItemListResponseHandler {
         }
     }
 
-    //
-    func search(_ txt: String) {
-        interactor.itemListPresenterRequestsGetSearchedItems(txt, forceUpdate: false)
-    }
-
-    func refresh() {
+    //Fetches the POIs from the Database or makes a request if the database is empty
+    func refresh(_ txt: String) {
         context = appDelegate.persistentContainer.viewContext
         let request = POI.fetchRequest() as NSFetchRequest<POI>
+        if txt != "" {
+            request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", txt)
+        }
         let sort = NSSortDescriptor(key: #keyPath(POI.title), ascending: true)
         request.sortDescriptors = [sort]
         do {
@@ -97,16 +97,22 @@ class ItemListPresenter: ItemListEventHandler, ItemListResponseHandler {
                 poi.geocoordinates = data.coordinates ?? ""
                 POIs.append(poi)
             }
+            //map entities to view models
+            viewModel.items.removeAll()
             viewModel.items = POIs.map(POIToItemListCellViewModelMapping)
             let rows = viewModel.items.map { (POIEntityModel) -> DataSourceItem in
                 return DataSourceItem(POIEntityModel, "\(POIEntityModel.POIIdentifier.value)")
             }
-            self.dataSource.addItems(rows)
+            self.dataSource.resetItems(rows)
         } catch let error as NSError {
             print("Could not fetch. \(error), \(error.userInfo)")
         }
         if fetchedRC.fetchedObjects?.count == 0 {
-            interactor.itemListPresenterRequestsGetItems(false)
+            if txt != "" {
+                interactor.itemListPresenterRequestsGetSearchedItems(txt, forceUpdate: false)
+            } else {
+                interactor.itemListPresenterRequestsGetItems(false)
+            }
         }
     }
 
@@ -122,7 +128,7 @@ class ItemListPresenter: ItemListEventHandler, ItemListResponseHandler {
     // MARK: ItemListViewHandler
     func itemListViewWillAppear() {
         //interactor.itemListPresenterRequestsGetItems(false)
-        refresh()
+        refresh("")
     }
 
     func itemListPullToRefreshReceived() {
@@ -154,7 +160,7 @@ class ItemListPresenter: ItemListEventHandler, ItemListResponseHandler {
                 appDelegate.saveContext()
             }
             self.viewController.animatePullToRefreshLoading(show: false)
-            refresh()
+            refresh("")
 
         case let .searchSuccess(POIs):
             //map entities to view models
