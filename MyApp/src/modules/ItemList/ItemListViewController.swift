@@ -90,7 +90,7 @@ extension ItemListViewController: UISearchBarDelegate {
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchBar.text = nil
         searchBar.resignFirstResponder()
-        presenter.reloadData()
+        presenter.refresh("")
         self.tableView?.reloadData()
     }
 }

@@ -16,9 +16,7 @@ protocol ItemListEventHandler: class {
     func itemListViewWillAppear()
     func itemListViewDidPressMenuButton()
     func itemListPullToRefreshReceived()
-    //func search(_ txt: String)
     func refresh(_ txt: String)
-    func reloadData()
 }
 
 // MARK: - Protocol to be defined at Presenter
@@ -114,10 +112,6 @@ class ItemListPresenter: ItemListEventHandler, ItemListResponseHandler {
                 interactor.itemListPresenterRequestsGetItems(false)
             }
         }
-    }
-
-    func reloadData() {
-        interactor.itemListPresenterRequestsGetItems(true)
     }
 
     func itemListViewDidPressMenuButton() {
